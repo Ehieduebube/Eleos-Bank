@@ -1,26 +1,383 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Eleos design tokens.
+ * Light theme is the default: warm off-white canvas, white cards, deep-navy ink.
+ *
+ * Brand: the logo tile colour #122040 — oklch(0.2505 0.0637 264.48), sampled from
+ * the rendered logo. Every brand step below keeps that exact hue (264.48°) and only
+ * moves lightness/chroma, so tints, shades, gradients and glows all read as the
+ * same colour. Emerald stays reserved for money-in / success.
+ *
+ * Every colour is a token so the dark theme is a deliberate second set of values
+ * rather than an automatic flip.
+ */
 
 @theme inline {
+  /* Brand ramp + semantic brand tokens (values live in :root / .dark) */
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-vivid: var(--brand-vivid);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-soft-border: var(--brand-soft-border);
+  --color-brand-glow: var(--brand-glow);
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-200: var(--brand-200);
+  --color-brand-300: var(--brand-300);
+  --color-brand-400: var(--brand-400);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-brand-800: var(--brand-800);
+  --color-brand-900: var(--brand-900);
+  --color-brand-950: var(--brand-950);
+  --color-sidebar-muted: var(--sidebar-muted);
+  --color-sidebar-icon: var(--sidebar-icon);
+  --color-sidebar-active-icon: var(--sidebar-active-icon);
+  --color-tooltip: var(--tooltip);
+  --color-tooltip-foreground: var(--tooltip-foreground);
+  /* Luminous depth: shadow-glow-sm / shadow-glow / shadow-glow-lg / shadow-glow-surface / shadow-glow-tile */
+  --shadow-glow-sm: var(--glow-sm);
+  --shadow-glow: var(--glow);
+  --shadow-glow-lg: var(--glow-lg);
+  --shadow-glow-surface: var(--glow-surface);
+  --shadow-glow-tile: var(--glow-tile);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-heading: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+  --color-chart-7: var(--chart-7);
+  --color-chart-8: var(--chart-8);
+  --color-chart-grid: var(--chart-grid);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger-soft: var(--danger-soft);
+  --color-info-soft: var(--info-soft);
+  --color-navy: var(--navy);
+  --color-navy-foreground: var(--navy-foreground);
+  --color-surface-sunken: var(--surface-sunken);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --shadow-card: 0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 3px 0 rgb(15 23 42 / 0.03);
+  --shadow-raised: 0 4px 16px -4px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.04);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --radius: 0.75rem;
+
+  /* Brand ramp — hue 264.48 (logo tile). 800 is the exact logo colour. Shared by both themes. */
+  --brand-50: oklch(0.975 0.01 264.48);
+  --brand-100: oklch(0.948 0.022 264.48);
+  --brand-200: oklch(0.89 0.052 264.48);
+  --brand-300: oklch(0.8 0.09 264.48);
+  --brand-400: oklch(0.68 0.135 264.48);
+  --brand-500: oklch(0.56 0.16 264.48);
+  --brand-600: oklch(0.46 0.15 264.48);
+  --brand-700: oklch(0.355 0.105 264.48);
+  --brand-800: #122040;
+  --brand-900: oklch(0.2 0.05 264.48);
+  --brand-950: oklch(0.155 0.036 264.48);
+
+  /* Canvas & surfaces */
+  --background: oklch(0.984 0.003 85);
+  --foreground: oklch(0.22 0.045 264.48);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.045 264.48);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.045 264.48);
+  --surface-sunken: oklch(0.97 0.004 85);
+
+  /* Brand — semantic */
+  --brand: var(--brand-800);
+  --brand-foreground: oklch(0.99 0 0);
+  --brand-vivid: var(--brand-600); /* links, highlighted icons — 7.3:1 on white */
+  --brand-soft: oklch(0.962 0.016 264.48); /* tinted fills */
+  --brand-soft-border: oklch(0.885 0.045 264.48);
+  --brand-glow: var(--brand-500); /* the light source for glows, focus and selection */
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-foreground);
+  --navy: oklch(0.25 0.065 265); /* logo tile fill — renders #122040; do not change */
+  --navy-foreground: oklch(0.98 0.005 265);
+
+  /* Gradients: a lighter top edge falling through the exact brand colour into a deeper base */
+  --gradient-brand: linear-gradient(180deg, oklch(0.35 0.1 264.48) 0%, var(--brand) 58%, oklch(0.205 0.052 264.48) 100%);
+  --gradient-brand-x: linear-gradient(90deg, var(--brand) 0%, var(--brand-500) 100%);
+  --gradient-brand-surface:
+    radial-gradient(110% 80% at 100% 0%, oklch(0.56 0.16 264.48 / 0.42) 0%, transparent 58%),
+    radial-gradient(70% 60% at 0% 100%, oklch(0.46 0.15 264.48 / 0.28) 0%, transparent 62%),
+    linear-gradient(150deg, oklch(0.3 0.085 264.48) 0%, var(--brand) 48%, oklch(0.185 0.046 264.48) 100%);
+  --ambient-brand: oklch(0.56 0.16 264.48 / 0.065);
+
+  /* Glows: inner top highlight + tight contact shadow + soft brand-coloured bloom */
+  --glow-sm: inset 0 1px 0 0 rgb(255 255 255 / 0.14), 0 1px 2px 0 rgb(18 32 64 / 0.2), 0 3px 10px -3px oklch(0.56 0.16 264.48 / 0.4);
+  --glow: inset 0 1px 0 0 rgb(255 255 255 / 0.16), 0 1px 2px 0 rgb(18 32 64 / 0.22), 0 6px 18px -6px oklch(0.56 0.16 264.48 / 0.55);
+  --glow-lg: inset 0 1px 0 0 rgb(255 255 255 / 0.2), 0 2px 4px 0 rgb(18 32 64 / 0.2), 0 10px 26px -8px oklch(0.56 0.16 264.48 / 0.62);
+  --glow-surface: inset 0 1px 0 0 rgb(255 255 255 / 0.1), 0 1px 3px 0 rgb(18 32 64 / 0.16), 0 18px 40px -18px oklch(0.46 0.15 264.48 / 0.6);
+  --glow-tile: 0 0 0 1px oklch(0.56 0.16 264.48 / 0.3), 0 6px 16px -8px oklch(0.56 0.16 264.48 / 0.5);
+
+  --secondary: oklch(0.963 0.012 264.48);
+  --secondary-foreground: oklch(0.3 0.075 264.48);
+  --muted: oklch(0.965 0.004 85);
+  --muted-foreground: oklch(0.5 0.03 264.48);
+  --accent: oklch(0.952 0.022 264.48);
+  --accent-foreground: oklch(0.4 0.13 264.48);
+  --tooltip: var(--brand);
+  --tooltip-foreground: oklch(0.99 0 0);
+
+  /* Status */
+  --destructive: oklch(0.56 0.2 27);
+  --danger-soft: oklch(0.97 0.018 25);
+  --success: oklch(0.5 0.12 162);
+  --success-foreground: oklch(0.99 0 0);
+  --success-soft: oklch(0.965 0.03 165);
+  --warning: oklch(0.55 0.13 65);
+  --warning-foreground: oklch(0.99 0 0);
+  --warning-soft: oklch(0.97 0.04 85);
+  --info-soft: var(--brand-soft);
+
+  /* Lines */
+  --border: oklch(0.915 0.006 85);
+  --input: oklch(0.885 0.008 264.48);
+  --ring: var(--brand-glow);
+
+  /* Chart palette (validated categorical order; slot 1 is the brand blue, re-validated) */
+  --chart-1: #446ed1;
+  --chart-2: #eb6834;
+  --chart-3: #1baf7a;
+  --chart-4: #eda100;
+  --chart-5: #e87ba4;
+  --chart-6: #008300;
+  --chart-7: #6250d6;
+  --chart-8: #e34948;
+  --chart-grid: #e7e6e0;
+
+  /* Sidebar: a navy brand panel in both themes (contrast measured on #122040) */
+  --sidebar: var(--brand-800);
+  --sidebar-foreground: oklch(0.86 0.03 264.48); /* 10.5:1 */
+  --sidebar-muted: oklch(0.72 0.035 264.48); /* 6.5:1 */
+  --sidebar-primary: oklch(1 0 0); /* active item: a white pill */
+  --sidebar-primary-foreground: var(--brand-800); /* navy on white, 15:1 */
+  --sidebar-accent: rgb(255 255 255 / 0.07); /* hover fill */
+  --sidebar-accent-foreground: oklch(0.99 0 0);
+  --sidebar-border: rgb(255 255 255 / 0.07);
+  --sidebar-ring: var(--brand-300);
+  --sidebar-icon: oklch(0.74 0.08 264.48); /* 7:1 */
+  --sidebar-active-icon: var(--brand-600); /* brand blue on white */
+  /* Lighter at the top (so the logo tile still reads), exact brand through the middle, deeper at the base. */
+  --gradient-sidebar:
+    radial-gradient(130% 55% at 0% 0%, oklch(0.56 0.16 264.48 / 0.3) 0%, transparent 65%),
+    radial-gradient(90% 40% at 100% 100%, oklch(0.46 0.15 264.48 / 0.22) 0%, transparent 70%),
+    linear-gradient(180deg, oklch(0.27 0.075 264.48) 0%, var(--brand-800) 45%, oklch(0.2 0.05 264.48) 100%);}
+
+.dark {
+  --background: oklch(0.165 0.024 264.48);
+  --foreground: oklch(0.96 0.008 264.48);
+  --card: oklch(0.205 0.028 264.48);
+  --card-foreground: oklch(0.96 0.008 264.48);
+  --popover: oklch(0.22 0.03 264.48);
+  --popover-foreground: oklch(0.96 0.008 264.48);
+  --surface-sunken: oklch(0.185 0.026 264.48);
+
+  /* On a dark canvas the brand is lifted to a luminous mid-tone of the same hue
+     (white text 5.6:1, 3.4:1 against the canvas); hero surfaces keep the exact #122040. */
+  --brand: var(--brand-800);
+  --brand-foreground: oklch(0.99 0 0);
+  --brand-vivid: oklch(0.78 0.11 264.48);
+  --brand-soft: oklch(0.265 0.055 264.48);
+  --brand-soft-border: oklch(0.4 0.1 264.48);
+  --brand-glow: oklch(0.64 0.17 264.48);
+  --primary: oklch(0.52 0.16 264.48);
+  --primary-foreground: oklch(0.99 0 0);
+  --navy: oklch(0.27 0.07 265);
+  --navy-foreground: oklch(0.98 0.005 265);
+
+  --gradient-brand: linear-gradient(180deg, oklch(0.585 0.165 264.48) 0%, oklch(0.52 0.16 264.48) 58%, oklch(0.465 0.15 264.48) 100%);
+  --gradient-brand-x: linear-gradient(90deg, oklch(0.46 0.15 264.48) 0%, var(--brand-400) 100%);
+  --gradient-brand-surface:
+    radial-gradient(110% 80% at 100% 0%, oklch(0.56 0.16 264.48 / 0.48) 0%, transparent 58%),
+    radial-gradient(70% 60% at 0% 100%, oklch(0.46 0.15 264.48 / 0.32) 0%, transparent 62%),
+    linear-gradient(150deg, oklch(0.31 0.09 264.48) 0%, var(--brand) 48%, oklch(0.185 0.046 264.48) 100%);
+  --ambient-brand: oklch(0.56 0.16 264.48 / 0.1);
+
+  --glow-sm: inset 0 1px 0 0 rgb(255 255 255 / 0.18), 0 1px 2px 0 rgb(0 0 0 / 0.35), 0 3px 12px -3px oklch(0.64 0.17 264.48 / 0.4);
+  --glow: inset 0 1px 0 0 rgb(255 255 255 / 0.2), 0 1px 2px 0 rgb(0 0 0 / 0.4), 0 6px 20px -6px oklch(0.64 0.17 264.48 / 0.5);
+  --glow-lg: inset 0 1px 0 0 rgb(255 255 255 / 0.22), 0 2px 4px 0 rgb(0 0 0 / 0.4), 0 10px 30px -8px oklch(0.64 0.17 264.48 / 0.6);
+  --glow-surface: inset 0 1px 0 0 rgb(255 255 255 / 0.09), 0 0 0 1px rgb(255 255 255 / 0.06), 0 18px 44px -16px oklch(0.56 0.16 264.48 / 0.45);
+  --glow-tile: 0 0 0 1px oklch(0.64 0.17 264.48 / 0.35), 0 6px 18px -8px oklch(0.64 0.17 264.48 / 0.45);
+
+  --secondary: oklch(0.26 0.035 264.48);
+  --secondary-foreground: oklch(0.94 0.01 264.48);
+  --muted: oklch(0.24 0.028 264.48);
+  --muted-foreground: oklch(0.72 0.025 264.48);
+  --accent: oklch(0.285 0.055 264.48);
+  --accent-foreground: oklch(0.9 0.06 264.48);
+  --tooltip: oklch(0.3 0.075 264.48);
+  --tooltip-foreground: oklch(0.99 0 0);
+
+  --destructive: oklch(0.7 0.18 25);
+  --danger-soft: oklch(0.27 0.06 25);
+  --success: oklch(0.74 0.14 162);
+  --success-foreground: oklch(0.16 0.03 165);
+  --success-soft: oklch(0.26 0.05 165);
+  --warning: oklch(0.8 0.13 80);
+  --warning-foreground: oklch(0.18 0.03 80);
+  --warning-soft: oklch(0.28 0.05 80);
+  --info-soft: var(--brand-soft);
+
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: var(--brand-400);
+
+  --chart-1: #4f7adf;
+  --chart-2: #d95926;
+  --chart-3: #199e70;
+  --chart-4: #c98500;
+  --chart-5: #d55181;
+  --chart-6: #008300;
+  --chart-7: #9085e9;
+  --chart-8: #e66767;
+  --chart-grid: #2c2f3a;
+
+  /* Sidebar tokens are shared with the light theme: the navy panel is the same in both. */
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  :focus-visible {
+    outline-offset: 2px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .bg-grid-faint {
+    background-image:
+      radial-gradient(circle at 1px 1px, rgb(255 255 255 / 0.07) 1px, transparent 0);
+    background-size: 18px 18px;
+  }
+}
+
+/* Brand surfaces. Each sets a solid fallback colour under its gradient. */
+@utility bg-brand-gradient {
+  background-color: var(--primary);
+  background-image: var(--gradient-brand);
+}
+@utility bg-brand-gradient-x {
+  background-color: var(--primary);
+  background-image: var(--gradient-brand-x);
+}
+@utility bg-brand-surface {
+  background-color: var(--brand);
+  background-image: var(--gradient-brand-surface);
+}
+@utility bg-sidebar-surface {
+  background-color: var(--sidebar);
+  background-image: var(--gradient-sidebar);
+}
+/* A soft diagonal reflection across a brand surface. The element must be positioned. */
+@utility sheen {
+  isolation: isolate;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: linear-gradient(115deg, rgb(255 255 255 / 0.13) 0%, rgb(255 255 255 / 0.03) 34%, transparent 56%);
+    pointer-events: none;
+  }
+}
+/* Faint top-down brand light behind page content. */
+@utility bg-ambient-brand {
+  background-image: radial-gradient(60% 100% at 50% 0%, var(--ambient-brand) 0%, transparent 100%);
+}
+
+@media print {
+  @page {
+    margin: 14mm;
+  }
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

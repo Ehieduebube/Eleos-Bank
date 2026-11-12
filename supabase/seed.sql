@@ -1,0 +1,13 @@
+-- Eleos seed data
+--
+-- Demo accounts are provisioned by the application, not by static SQL, so the
+-- local store and Supabase share one seed builder (src/server/seed/demo-seed.ts)
+-- and every account lands exactly on the ₦45,140,708.60 opening balance.
+--
+--   * Any user who signs in gets a demo account on first visit
+--     (public.app_provision_demo_account, called with the service role).
+--   * The shared demo login is created with:  npm run db:seed
+--
+-- Reference data (banks, networks, billers, plans) lives in src/lib/catalog.
+-- This file intentionally inserts nothing.
+select 1;
