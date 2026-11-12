@@ -29,9 +29,16 @@ export function UrlTabs({ tabs, defaultValue, className, listClassName }: { tabs
       }}
       className={cn("gap-5", className)}
     >
-      <TabsList className={cn("scrollbar-none h-10! w-full justify-start overflow-x-auto sm:w-fit", listClassName)}>
+      {/* Phones: a two-column grid so every tab is fully visible (an odd last tab spans the row).
+          From sm up: the usual single-row segmented control. */}
+      <TabsList
+        className={cn(
+          "grid h-auto! w-full grid-cols-2 gap-1 sm:inline-flex sm:h-10! sm:w-fit sm:justify-start sm:gap-0",
+          listClassName,
+        )}
+      >
         {tabs.map((tab) => (
-          <TabsTrigger key={tab.value} value={tab.value} className="px-3">
+          <TabsTrigger key={tab.value} value={tab.value} className="h-9 px-3 last:odd:col-span-2 sm:h-[calc(100%-1px)]">
             {tab.label}
           </TabsTrigger>
         ))}
