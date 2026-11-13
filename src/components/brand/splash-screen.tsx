@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Logo } from "@/components/brand/logo";
 import { cn } from "@/lib/utils";
 
@@ -30,13 +30,14 @@ function documentLoaded() {
 }
 
 /**
- * Full-screen brand splash shown while Eleos first loads (a new tab or a full reload).
+ * Full-screen brand splash shown while Eleos first loads (a new tab or a full reload),
+ * wrapped around the app.
  *
  * It is server-rendered into the first HTML, so it paints before the page beneath it.
  * It lives in the root layout, which persists across client-side navigation, so it never
  * replays when moving between pages, signing in or signing out.
  */
-export function SplashScreen() {
+export function SplashScreen({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const [phase, setPhase] = useState<Phase>(() =>
     NO_SPLASH_PREFIXES.some((prefix) => pathname.startsWith(prefix)) ? "gone" : "shown",
@@ -65,48 +66,66 @@ export function SplashScreen() {
     };
   }, [phase]);
 
-  if (phase === "gone") return null;
-
   return (
     <>
-      <div
-        data-splash=""
-        aria-hidden="true"
-        className={cn(
-          "fixed inset-0 z-[100] flex touch-none items-center justify-center overflow-hidden bg-brand-surface select-none",
-          // Fallback if the app's JavaScript never runs: hide on its own rather than cover the page.
-          "animate-splash-failsafe",
-          "transition-opacity duration-500 ease-out",
-          phase === "leaving" && "pointer-events-none opacity-0",
-        )}
-      >
-        {/* Soft light behind the logo, and the auth panel's dot grid fading out toward the edges. */}
-        <div className="absolute inset-0 bg-[radial-gradient(45%_38%_at_50%_50%,oklch(0.56_0.16_264.48/0.32)_0%,transparent_100%)]" />
-        <div className="bg-grid-faint absolute inset-0 [mask-image:radial-gradient(60%_50%_at_50%_50%,black_0%,transparent_100%)]" />
+      {phase !== "gone" && (
+        <>
+          <div
+            data-splash=""
+            className={cn(
+              "fixed inset-0 z-[100] flex touch-none items-center justify-center overflow-hidden bg-brand-surface select-none",
+              // Fallback if the app's JavaScript never runs: hide on its own rather than cover the page.
+              "animate-splash-failsafe",
+              "transition-opacity duration-500 ease-out",
+              phase === "leaving" && "pointer-events-none opacity-0",
+            )}
+          >
+            {/* Soft light behind the logo, and the auth panel's dot grid fading out toward the edges. */}
+            <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(45%_38%_at_50%_50%,oklch(0.56_0.16_264.48/0.32)_0%,transparent_100%)]" />
+            <div aria-hidden="true" className="bg-grid-faint absolute inset-0 [mask-image:radial-gradient(60%_50%_at_50%_50%,black_0%,transparent_100%)]" />
 
-        <div className="relative">
-          <Logo
-            inverse
-            className="gap-4 motion-safe:animate-splash-in sm:gap-5 lg:gap-6"
-            markClassName="size-14 sm:size-16 lg:size-20"
-            wordmarkClassName="text-3xl motion-safe:animate-splash-word sm:text-[2.125rem] lg:text-[2.625rem]"
-          />
-
-          {/* Appears only if loading runs past the minimum display time. */}
-          <div className="absolute inset-x-0 top-full mt-12 flex animate-splash-late justify-center gap-1.5">
-            {[0, 160, 320].map((delay) => (
-              <span
-                key={delay}
-                className="size-1.5 rounded-full bg-white/80 motion-safe:animate-splash-dot"
-                style={{ animationDelay: `${delay}ms` }}
+            {/* The logo and name sit at the exact centre; the tagline and loading dots hang below them. */}
+            <div className="relative">
+              <Logo
+                inverse
+                className="gap-4 motion-safe:animate-splash-in sm:gap-5 lg:gap-6"
+                markClassName="size-14 sm:size-16 lg:size-20"
+                wordmarkClassName="text-3xl motion-safe:animate-splash-word sm:text-[2.125rem] lg:text-[2.625rem]"
               />
-            ))}
+
+              <div className="absolute inset-x-0 top-full mt-5 flex flex-col items-center gap-10 sm:mt-6 lg:mt-7">
+                <p className="text-[0.9375rem] font-normal tracking-[0.015em] whitespace-nowrap text-brand-200/80 motion-safe:animate-splash-tagline sm:text-base lg:text-lg">
+                  A smarter way to bank.
+                </p>
+
+                {/* Appears only if loading runs past the minimum display time. */}
+                <div aria-hidden="true" className="flex animate-splash-late gap-1.5">
+                  {[0, 160, 320].map((delay) => (
+                    <span
+                      key={delay}
+                      className="size-1.5 rounded-full bg-white/80 motion-safe:animate-splash-dot"
+                      style={{ animationDelay: `${delay}ms` }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+          <noscript>
+            <style>{"[data-splash]{display:none}"}</style>
+          </noscript>
+        </>
+      )}
+
+      {/*
+        The page beneath can't be focused while the splash is up: iOS Safari otherwise
+        focuses the sign-in email field on load and shows its saved-password bar on top of
+        the splash. `inert` has to be in the first HTML to beat that, so it is rendered here
+        and lifted as the splash starts to fade. `contents` keeps this wrapper out of layout.
+      */}
+      <div className="contents" inert={phase === "shown"}>
+        {children}
       </div>
-      <noscript>
-        <style>{"[data-splash]{display:none}"}</style>
-      </noscript>
     </>
   );
 }

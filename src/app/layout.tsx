@@ -24,9 +24,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en-NG" suppressHydrationWarning className={`${inter.variable} ${geistMono.variable} h-full`}>
       <body className="min-h-full">
-        {/* First in the body so it paints before the page beneath it. */}
-        <SplashScreen />
-        <Providers>{children}</Providers>
+        {/* Renders the splash first in the body, so it paints before the page beneath it. */}
+        <SplashScreen>
+          <Providers>{children}</Providers>
+        </SplashScreen>
       </body>
     </html>
   );
