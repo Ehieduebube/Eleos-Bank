@@ -8,7 +8,8 @@ export default function OverviewLoading() {
         <Skeleton className="h-4 w-80 max-w-full" />
       </div>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
-        <Skeleton className="h-64 rounded-2xl lg:col-span-3" />
+        {/* The balance card is navy, so its placeholder is too. */}
+        <Skeleton brand className="h-64 rounded-2xl lg:col-span-3" />
         <Skeleton className="h-64 rounded-2xl lg:col-span-2" />
       </div>
       <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 xl:grid-cols-4">

@@ -116,8 +116,6 @@
   --animate-splash-dot: splash-dot 1.2s ease-in-out infinite;
   /* The loading dots fade in only if the splash is still up after its 2s minimum. */
   --animate-splash-late: splash-fade-in 400ms 2600ms ease-out both;
-  /* If the app's JavaScript never runs, the splash takes itself away. */
-  --animate-splash-failsafe: splash-fade-out 400ms 15s forwards;
 
   @keyframes splash-in {
     from {
@@ -153,12 +151,23 @@
       opacity: 0;
     }
   }
-  @keyframes splash-fade-out {
-    to {
-      opacity: 0;
-      visibility: hidden;
-    }
-  }
+}
+
+/*
+ * The splash is in every full page's HTML but only shown on an app launch, when the inline
+ * launch script sets <html data-splash> (src/components/brand/splash-launch.ts). While it is
+ * up ("show"), the page beneath is hidden, which also keeps it unfocusable: iOS Safari would
+ * otherwise focus the sign-in field and put its saved-password bar over the splash. As the
+ * splash fades ("leaving"), the page shows through. Unlayered, so these beat utilities.
+ */
+[data-splash-screen] {
+  display: none;
+}
+html[data-splash] [data-splash-screen] {
+  display: flex;
+}
+html[data-splash="show"] body > :not([data-splash-screen]) {
+  visibility: hidden;
 }
 
 :root {
@@ -206,6 +215,9 @@
     radial-gradient(70% 60% at 0% 100%, oklch(0.46 0.15 264.48 / 0.28) 0%, transparent 62%),
     linear-gradient(150deg, oklch(0.3 0.085 264.48) 0%, var(--brand) 48%, oklch(0.185 0.046 264.48) 100%);
   --ambient-brand: oklch(0.56 0.16 264.48 / 0.065);
+  /* Loading skeletons: a faint tint of the brand hue with a soft light sweeping across. */
+  --skeleton: oklch(0.945 0.016 264.48);
+  --skeleton-highlight: oklch(0.988 0.007 264.48);
 
   /* Glows: inner top highlight + tight contact shadow + soft brand-coloured bloom */
   --glow-sm: inset 0 1px 0 0 rgb(255 255 255 / 0.14), 0 1px 2px 0 rgb(18 32 64 / 0.2), 0 3px 10px -3px oklch(0.56 0.16 264.48 / 0.4);
@@ -297,6 +309,8 @@
     radial-gradient(70% 60% at 0% 100%, oklch(0.46 0.15 264.48 / 0.32) 0%, transparent 62%),
     linear-gradient(150deg, oklch(0.31 0.09 264.48) 0%, var(--brand) 48%, oklch(0.185 0.046 264.48) 100%);
   --ambient-brand: oklch(0.56 0.16 264.48 / 0.1);
+  --skeleton: oklch(0.235 0.032 264.48);
+  --skeleton-highlight: oklch(0.305 0.052 264.48);
 
   --glow-sm: inset 0 1px 0 0 rgb(255 255 255 / 0.18), 0 1px 2px 0 rgb(0 0 0 / 0.35), 0 3px 12px -3px oklch(0.64 0.17 264.48 / 0.4);
   --glow: inset 0 1px 0 0 rgb(255 255 255 / 0.2), 0 1px 2px 0 rgb(0 0 0 / 0.4), 0 6px 20px -6px oklch(0.64 0.17 264.48 / 0.5);
@@ -411,6 +425,33 @@
 /* Faint top-down brand light behind page content. */
 @utility bg-ambient-brand {
   background-image: radial-gradient(60% 100% at 50% 0%, var(--ambient-brand) 0%, transparent 100%);
+}
+/* Loading placeholder: a brand-tinted block with a soft light sweeping across it. */
+@utility skeleton-shimmer {
+  background-color: var(--skeleton);
+  background-image: linear-gradient(100deg, transparent 35%, var(--skeleton-highlight) 50%, transparent 65%);
+  background-size: 250% 100%;
+  background-repeat: no-repeat;
+  animation: skeleton-sweep 1.8s ease-in-out infinite;
+}
+/* The same on the navy brand surface, for placeholders of navy cards (the balance card). */
+@utility skeleton-shimmer-brand {
+  background-color: var(--brand);
+  background-image:
+    linear-gradient(100deg, transparent 35%, rgb(255 255 255 / 0.08) 50%, transparent 65%),
+    var(--gradient-brand-surface);
+  background-size: 250% 100%, 100% 100%;
+  background-repeat: no-repeat;
+  animation: skeleton-sweep 1.8s ease-in-out infinite;
+}
+/* Moves the light band (the first background layer) from off the left edge to off the right. */
+@keyframes skeleton-sweep {
+  from {
+    background-position: 120% 0, 0 0;
+  }
+  to {
+    background-position: -20% 0, 0 0;
+  }
 }
 
 @media print {

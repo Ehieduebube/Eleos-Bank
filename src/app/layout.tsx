@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Inter } from "next/font/google";
+import { splashLaunchScript } from "@/components/brand/splash-launch";
 import { SplashScreen } from "@/components/brand/splash-screen";
 import { Providers } from "@/components/providers";
 import "./globals.css";
@@ -23,11 +24,13 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-NG" suppressHydrationWarning className={`${inter.variable} ${geistMono.variable} h-full`}>
+      <head>
+        {/* Decides before the first paint whether this load is an app launch that gets the splash. */}
+        <script dangerouslySetInnerHTML={{ __html: splashLaunchScript }} />
+      </head>
       <body className="min-h-full">
-        {/* Renders the splash first in the body, so it paints before the page beneath it. */}
-        <SplashScreen>
-          <Providers>{children}</Providers>
-        </SplashScreen>
+        <SplashScreen />
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
