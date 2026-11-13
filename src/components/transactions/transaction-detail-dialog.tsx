@@ -21,7 +21,7 @@ export function SummaryList({ rows, className }: { rows: SummaryRow[]; className
       {rows.map((row) => (
         <div key={`${row.label}-${row.value}`} className="flex items-start justify-between gap-4 py-2.5 text-sm">
           <dt className="shrink-0 text-muted-foreground">{row.label}</dt>
-          <dd className={cn("min-w-0 text-right break-words", row.emphasis && "font-semibold text-foreground", row.mono && "font-mono text-[0.8125rem]")}>
+          <dd className={cn("min-w-0 text-right [overflow-wrap:anywhere]", row.emphasis && "font-semibold text-foreground", row.mono && "font-mono text-[0.8125rem]")}>
             {row.value}
           </dd>
         </div>
