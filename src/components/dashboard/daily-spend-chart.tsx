@@ -2,14 +2,14 @@
 
 import dynamic from "next/dynamic";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import type { DailyPoint } from "@/lib/analytics";
 import { formatNaira } from "@/lib/money";
+import { ChartPlaceholder, ChartUnavailable } from "./chart-parts";
 
 // Lazy-loaded like the income vs expenses plot: see income-expense-chart.tsx.
-const DailySpendPlot = dynamic(() => import("./daily-spend-plot"), {
+const DailySpendPlot = dynamic(() => import("./daily-spend-plot").catch(() => ({ default: ChartUnavailable })), {
   ssr: false,
-  loading: () => <Skeleton className="size-full rounded-lg" />,
+  loading: ChartPlaceholder,
 });
 
 export function DailySpendChart({ data }: { data: DailyPoint[] }) {

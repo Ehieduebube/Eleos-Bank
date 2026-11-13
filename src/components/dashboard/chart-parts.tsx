@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { formatNaira, formatNairaCompact } from "@/lib/money";
 
 /** Series colours of the income vs expenses chart (its legend and its lazy-loaded plot). */
@@ -33,6 +35,30 @@ export function ChartTooltip({ active, label, payload, extra }: { active?: boole
       </ul>
       {extra && payload[0] && extra(payload[0]) && <p className="mt-1.5 text-muted-foreground">{extra(payload[0])}</p>}
     </div>
+  );
+}
+
+/** The placeholder shown while a chart's lazy-loaded code arrives (it fills the plot's fixed box). */
+export function ChartPlaceholder() {
+  return <Skeleton className="size-full rounded-lg" />;
+}
+
+/**
+ * Stands in for a chart whose code failed to load, instead of the error taking down the whole
+ * page. Usually that is the page unloading mid-download (a refresh before the chart arrived), so
+ * it keeps the placeholder; if the page is still here a few seconds later, it says so.
+ */
+export function ChartUnavailable() {
+  const [stillHere, setStillHere] = useState(false);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setStillHere(true), 3000);
+    return () => window.clearTimeout(timer);
+  }, []);
+  if (!stillHere) return <ChartPlaceholder />;
+  return (
+    <p className="flex size-full items-center justify-center rounded-lg bg-muted/50 px-4 text-center text-sm text-muted-foreground">
+      This chart couldn&apos;t load. Refresh the page to try again.
+    </p>
   );
 }
 

@@ -2,16 +2,15 @@
 
 import dynamic from "next/dynamic";
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import type { MonthlyPoint } from "@/lib/analytics";
 import { formatNaira } from "@/lib/money";
-import { EXPENSES_COLOR, INCOME_COLOR, LegendKey } from "./chart-parts";
+import { ChartPlaceholder, ChartUnavailable, EXPENSES_COLOR, INCOME_COLOR, LegendKey } from "./chart-parts";
 
 // Recharts loads after the page is interactive, in its own chunk; the card, its legend and the
 // screen-reader table below render with the page. The placeholder fills the plot's fixed box.
-const IncomeExpensePlot = dynamic(() => import("./income-expense-plot"), {
+const IncomeExpensePlot = dynamic(() => import("./income-expense-plot").catch(() => ({ default: ChartUnavailable })), {
   ssr: false,
-  loading: () => <Skeleton className="size-full rounded-lg" />,
+  loading: ChartPlaceholder,
 });
 
 export function IncomeExpenseChart({ data }: { data: MonthlyPoint[] }) {
