@@ -1,7 +1,7 @@
 import { AmountFieldSkeleton, CardSkeleton, FieldSkeleton, PageHeaderSkeleton, PageSkeleton, PrimaryButtonSkeleton, TabsSkeleton } from "@/components/shared/page-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function BillsLoading() {
+export function BillsSkeleton() {
   return (
     <PageSkeleton label="Loading bills">
       <PageHeaderSkeleton title="w-36" description="w-80" />

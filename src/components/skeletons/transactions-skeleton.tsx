@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function TransactionsLoading() {
+export function TransactionsSkeleton() {
   return (
     <div className="space-y-6" aria-busy="true" aria-label="Loading transactions">
       <div className="space-y-2">

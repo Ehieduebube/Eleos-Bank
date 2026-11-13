@@ -15,7 +15,7 @@ function ControlRow() {
   );
 }
 
-export default function CardsLoading() {
+export function CardsSkeleton() {
   return (
     <PageSkeleton label="Loading cards">
       <PageHeaderSkeleton title="w-28" description="w-96" />

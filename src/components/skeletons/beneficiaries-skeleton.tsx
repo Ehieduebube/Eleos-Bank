@@ -1,7 +1,7 @@
 import { PageHeaderSkeleton, PageSkeleton, PrimaryButtonSkeleton } from "@/components/shared/page-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function BeneficiariesLoading() {
+export function BeneficiariesSkeleton() {
   return (
     <PageSkeleton label="Loading beneficiaries">
       <PageHeaderSkeleton title="w-44" description="w-80" />

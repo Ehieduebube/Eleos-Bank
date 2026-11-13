@@ -1,7 +1,7 @@
 import { AmountFieldSkeleton, CardSkeleton, FieldSkeleton, PageHeaderSkeleton, PageSkeleton, PrimaryButtonSkeleton, TabsSkeleton } from "@/components/shared/page-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function AirtimeLoading() {
+export function AirtimeSkeleton() {
   return (
     <PageSkeleton label="Loading airtime and data">
       <PageHeaderSkeleton title="w-52" description="w-72" />

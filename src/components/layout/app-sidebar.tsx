@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useNavPathname } from "./route-transition";
 import { Logo } from "@/components/brand/logo";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { initials } from "@/lib/format";
@@ -10,7 +10,7 @@ import { NAV_ITEMS, isActive } from "./nav-items";
 
 /** Desktop navigation: a navy brand panel; the current page is a white pill. */
 export function AppSidebar({ fullName, email }: { fullName: string; email: string }) {
-  const pathname = usePathname();
+  const pathname = useNavPathname();
   return (
     <aside
       className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-sidebar-border bg-sidebar-surface text-sidebar-foreground [color-scheme:dark] lg:flex"

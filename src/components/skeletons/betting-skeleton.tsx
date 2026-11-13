@@ -1,7 +1,7 @@
 import { AmountFieldSkeleton, CardSkeleton, FieldSkeleton, PageHeaderSkeleton, PageSkeleton, PrimaryButtonSkeleton } from "@/components/shared/page-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function BettingLoading() {
+export function BettingSkeleton() {
   return (
     <PageSkeleton label="Loading betting">
       <PageHeaderSkeleton title="w-56" description="w-72" />

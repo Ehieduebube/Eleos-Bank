@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { Smartphone, Wifi } from "lucide-react";
 import { AirtimePanel, DataPanel } from "@/components/payments/airtime-forms";
 import { PageHeader } from "@/components/shared/page-header";
@@ -16,15 +15,13 @@ export default async function AirtimePage() {
       <PageHeader title="Airtime & data" description="Top up any MTN, Airtel, Glo or 9mobile line." />
       <Card className="max-w-3xl">
         <CardContent>
-          <Suspense>
-            <UrlTabs
-              defaultValue="airtime"
-              tabs={[
-                { value: "airtime", label: <><Smartphone className="size-4" /> Airtime</>, content: <AirtimePanel ownPhone={profile.phone} /> },
-                { value: "data", label: <><Wifi className="size-4" /> Data</>, content: <DataPanel ownPhone={profile.phone} /> },
-              ]}
-            />
-          </Suspense>
+          <UrlTabs
+            defaultValue="airtime"
+            tabs={[
+              { value: "airtime", label: <><Smartphone className="size-4" /> Airtime</>, content: <AirtimePanel ownPhone={profile.phone} /> },
+              { value: "data", label: <><Wifi className="size-4" /> Data</>, content: <DataPanel ownPhone={profile.phone} /> },
+            ]}
+          />
         </CardContent>
       </Card>
     </div>

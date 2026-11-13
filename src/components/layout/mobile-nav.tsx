@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useNavPathname } from "./route-transition";
 import { useState } from "react";
 import { LogOut, Menu } from "lucide-react";
 import { signOutAction } from "@/actions/auth";
@@ -27,7 +27,7 @@ function NavIndicator({ active, children }: { active: boolean; children: React.R
 
 /** Bottom navigation for phones and small tablets; "More" opens every destination. */
 export function MobileNav() {
-  const pathname = usePathname();
+  const pathname = useNavPathname();
   const [open, setOpen] = useState(false);
   const primary = NAV_ITEMS.filter((item) => MOBILE_PRIMARY.includes(item.href));
   const moreActive = !primary.some((item) => isActive(pathname, item.href));

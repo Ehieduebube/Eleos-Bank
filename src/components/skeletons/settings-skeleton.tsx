@@ -1,7 +1,7 @@
 import { CardSkeleton, FieldSkeleton, PageHeaderSkeleton, PageSkeleton, TabsSkeleton } from "@/components/shared/page-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function SettingsLoading() {
+export function SettingsSkeleton() {
   return (
     <PageSkeleton label="Loading settings">
       <PageHeaderSkeleton title="w-32" description="w-80" />

@@ -1,7 +1,7 @@
 import { AmountFieldSkeleton, CardSkeleton, FieldSkeleton, PageHeaderSkeleton, PageSkeleton, PrimaryButtonSkeleton } from "@/components/shared/page-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function TransferLoading() {
+export function TransferSkeleton() {
   return (
     <PageSkeleton label="Loading transfer">
       <PageHeaderSkeleton title="w-44" description="w-64" action="w-[12.5rem]" />

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Inter } from "next/font/google";
 import { splashLaunchScript } from "@/components/brand/splash-launch";
 import { SplashScreen } from "@/components/brand/splash-screen";
+import { scrollRestoreHeadScript } from "@/components/layout/scroll-restore";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 
@@ -27,6 +28,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         {/* Decides before the first paint whether this load is an app launch that gets the splash. */}
         <script dangerouslySetInnerHTML={{ __html: splashLaunchScript }} />
+        {/* On a refresh of a scrolled page, holds the first paint until it is back in place. */}
+        <script dangerouslySetInnerHTML={{ __html: scrollRestoreHeadScript }} />
       </head>
       <body className="min-h-full">
         <SplashScreen />

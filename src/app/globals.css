@@ -170,6 +170,15 @@ html[data-splash="show"] body > :not([data-splash-screen]) {
   visibility: hidden;
 }
 
+/*
+ * A refresh of a page that was scrolled down stays unpainted until it is scrolled back into
+ * place, so it never flashes its top first; the browser keeps the page being refreshed on screen
+ * meanwhile. Set and cleared by inline scripts (src/components/layout/scroll-restore.ts).
+ */
+html[data-restoring-scroll] body > * {
+  visibility: hidden;
+}
+
 :root {
   --radius: 0.75rem;
 

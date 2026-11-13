@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { PageHeader } from "@/components/shared/page-header";
 import { TransactionFilters } from "@/components/transactions/transaction-filters";
 import { TransactionsTable } from "@/components/transactions/transactions-table";
@@ -21,12 +20,8 @@ export default async function TransactionsPage({ searchParams }: { searchParams:
       <PageHeader title="Transactions" description="Search, filter and export your transaction history." />
       <Card>
         <CardContent className="space-y-5">
-          <Suspense>
-            <TransactionFilters />
-          </Suspense>
-          <Suspense>
-            <TransactionsTable key={`${JSON.stringify(query)}-${ref ?? ""}`} page={page} initialSelected={selected} />
-          </Suspense>
+          <TransactionFilters />
+          <TransactionsTable key={`${JSON.stringify(query)}-${ref ?? ""}`} page={page} initialSelected={selected} />
         </CardContent>
       </Card>
     </div>

@@ -11,11 +11,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { timeAgo } from "@/lib/format";
 import type { AppNotification } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useStartNavigation } from "./route-transition";
 
 const KIND_ICON = { transaction: ReceiptText, security: ShieldCheck, system: Sparkles } as const;
 
 export function NotificationsMenu({ notifications }: { notifications: AppNotification[] }) {
   const router = useRouter();
+  const startNavigation = useStartNavigation();
   const [open, setOpen] = useState(false);
   const [, startTransition] = useTransition();
   const [items, markRead] = useOptimistic(notifications, (state, ids: string[] | "all") =>
@@ -37,7 +39,10 @@ export function NotificationsMenu({ notifications }: { notifications: AppNotific
         await markNotificationsReadAction([n.id]);
       });
     }
-    if (n.link) router.push(n.link);
+    if (n.link) {
+      startNavigation(n.link);
+      router.push(n.link);
+    }
   };
 
   return (
