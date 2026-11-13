@@ -2,6 +2,10 @@
 
 import { formatNaira, formatNairaCompact } from "@/lib/money";
 
+/** Series colours of the income vs expenses chart (its legend and its lazy-loaded plot). */
+export const INCOME_COLOR = "var(--chart-3)";
+export const EXPENSES_COLOR = "var(--chart-1)";
+
 export interface TooltipEntry {
   name?: unknown;
   value?: unknown;
