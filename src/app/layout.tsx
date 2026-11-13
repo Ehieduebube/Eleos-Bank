@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Inter } from "next/font/google";
+import { SplashScreen } from "@/components/brand/splash-screen";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 
@@ -23,6 +24,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en-NG" suppressHydrationWarning className={`${inter.variable} ${geistMono.variable} h-full`}>
       <body className="min-h-full">
+        {/* First in the body so it paints before the page beneath it. */}
+        <SplashScreen />
         <Providers>{children}</Providers>
       </body>
     </html>

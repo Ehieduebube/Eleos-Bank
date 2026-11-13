@@ -18,18 +18,32 @@ export function LogoMark({ className }: { className?: string }) {
  * the background there, so the unchanged mark gets a hairline frame and soft glow
  * to keep its edge visible, and the wordmark turns white.
  */
-export function Logo({ className, showWordmark = true, inverse = false }: { className?: string; showWordmark?: boolean; inverse?: boolean }) {
+export function Logo({
+  className,
+  markClassName,
+  wordmarkClassName,
+  showWordmark = true,
+  inverse = false,
+}: {
+  className?: string;
+  /** Size the mark (default `size-8`). The inverse frame follows it. */
+  markClassName?: string;
+  wordmarkClassName?: string;
+  showWordmark?: boolean;
+  inverse?: boolean;
+}) {
   return (
     <span className={cn("inline-flex items-center gap-2.5", className)}>
       {inverse ? (
-        <span className="inline-flex rounded-[9px] shadow-[0_0_0_1px_rgb(255_255_255/0.16),0_6px_16px_-6px_rgb(0_0_0/0.55),0_0_20px_-4px_oklch(0.56_0.16_264.48/0.6)]">
-          <LogoMark />
+        // 28.125% = the tile's 9/32 corner radius, so the frame fits the mark at any size.
+        <span className="inline-flex rounded-[28.125%] shadow-[0_0_0_1px_rgb(255_255_255/0.16),0_6px_16px_-6px_rgb(0_0_0/0.55),0_0_20px_-4px_oklch(0.56_0.16_264.48/0.6)]">
+          <LogoMark className={markClassName} />
         </span>
       ) : (
-        <LogoMark />
+        <LogoMark className={markClassName} />
       )}
       {showWordmark && (
-        <span className={cn("text-[1.05rem] font-semibold tracking-tight", inverse ? "text-white" : "text-foreground")}>
+        <span className={cn("text-[1.05rem] font-semibold tracking-tight", inverse ? "text-white" : "text-foreground", wordmarkClassName)}>
           Eleos
         </span>
       )}
