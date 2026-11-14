@@ -124,14 +124,17 @@ function PinCard({ security, locked, canSet, reason }: { security: SecurityStatu
       <CardContent>
         {locked && <p className="mb-4 rounded-lg bg-danger-soft px-3 py-2 text-sm text-destructive">PIN locked after too many attempts. Try again after {formatDateTime(security.pinLockedUntil!)}.</p>}
         <form onSubmit={onSubmit} noValidate className="space-y-5">
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+          {/* A row of four PIN boxes is 11rem wide, so a column is never narrower than 12rem: the
+              fields sit side by side only when every row fits, and stack when the card is narrow.
+              When changing a PIN, the current one gets its own row above the new pair. */}
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] gap-x-6 gap-y-5">
             {slots.map((s) => (
               <Controller
                 key={s.name}
                 control={form.control}
                 name={s.name}
                 render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
+                  <Field data-invalid={fieldState.invalid} className={s.name === "currentPin" ? "col-span-full" : undefined}>
                     <FieldLabel htmlFor={s.name}>{s.label}</FieldLabel>
                     <PinSlots id={s.name} value={field.value} onChange={field.onChange} invalid={fieldState.invalid} disabled={locked || !canSet} />
                     <FieldError errors={[fieldState.error]} />
