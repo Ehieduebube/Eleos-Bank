@@ -7,7 +7,6 @@ import { Bell, CheckCheck, ReceiptText, ShieldCheck, Sparkles } from "lucide-rea
 import { markNotificationsReadAction } from "@/actions/settings";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { timeAgo } from "@/lib/format";
 import type { AppNotification } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -46,7 +45,9 @@ export function NotificationsMenu({ notifications }: { notifications: AppNotific
   };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    // Modal, like the account menu beside it: while the panel is open the page behind it can't
+    // scroll (a drag on a phone moves the list, never the page), and a tap outside just closes it.
+    <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon" className="relative" aria-label={unread ? `Notifications, ${unread} unread` : "Notifications"}>
           <Bell className="size-5" />
@@ -57,8 +58,16 @@ export function NotificationsMenu({ notifications }: { notifications: AppNotific
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-[min(24rem,calc(100vw-2rem))] p-0">
-        <div className="flex items-center justify-between border-b px-4 py-3">
+      {/* A column capped to the room below the bell (and, on phones, above the bottom nav), with
+          16px clear of the screen edges. Header and footer keep their size; the list between them
+          shrinks to fit and scrolls on its own. */}
+      <PopoverContent
+        align="end"
+        collisionPadding={16}
+        aria-label="Notifications"
+        className="flex max-h-[min(32rem,var(--radix-popover-content-available-height))] w-[min(24rem,calc(100vw-2rem))] flex-col gap-0 overflow-hidden p-0 max-lg:max-h-[min(32rem,calc(var(--radix-popover-content-available-height)_-_4rem_-_env(safe-area-inset-bottom)))]"
+      >
+        <div className="flex shrink-0 items-center justify-between border-b px-4 py-3">
           <p className="text-sm font-semibold">Notifications</p>
           <Button variant="ghost" size="sm" onClick={markAll} disabled={unread === 0}>
             <CheckCheck className="size-4" /> Mark all read
@@ -67,7 +76,9 @@ export function NotificationsMenu({ notifications }: { notifications: AppNotific
         {items.length === 0 ? (
           <p className="px-4 py-10 text-center text-sm text-muted-foreground">You&apos;re all caught up.</p>
         ) : (
-          <ScrollArea className="max-h-96">
+          // A plain scrolling box rather than <ScrollArea>: its viewport is height: 100% of a box
+          // that only has a max-height, so it grew to fit every item and spilled out of the panel.
+          <div className="min-h-0 overflow-y-auto overscroll-contain [scrollbar-width:thin]">
             <ul className="divide-y">
               {items.map((n) => {
                 const Icon = KIND_ICON[n.kind];
@@ -94,9 +105,9 @@ export function NotificationsMenu({ notifications }: { notifications: AppNotific
                 );
               })}
             </ul>
-          </ScrollArea>
+          </div>
         )}
-        <div className="border-t px-4 py-2.5 text-center">
+        <div className="shrink-0 border-t px-4 py-2.5 text-center">
           <Link href="/settings?tab=notifications" onClick={() => setOpen(false)} className="text-xs font-medium text-brand-vivid hover:underline">
             Notification preferences
           </Link>
